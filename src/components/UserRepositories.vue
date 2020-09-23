@@ -7,8 +7,9 @@
 </template>
 
 <script>
-import { fetchUserRepositories } from '@/api/repositories'
-import { ref, onMounted, toRefs, watch } from 'vue'
+import useUserRepositories from '@/composables/useUserRepositories'
+import useRepositoryNameSearch from '@/composables/useRepositoryNameSearch'
+import { toRefs } from 'vue'
 export default {
   // components: { RepositoriesFilters, RepositoriesSortBy, RepositoriesList },
   props: {
@@ -17,33 +18,28 @@ export default {
   setup(props) {
     const { user } = toRefs(props)
 
-    let repositories = ref([])
-    const getUserRepositories = async () => {
-      repositories.value = await fetchUserRepositories(user.value)
-    }
+    const { repositories, getUserRepositories } = useUserRepositories(user)
 
-    onMounted(getUserRepositories)
-
-    watch(user, getUserRepositories)
+    const {
+      searchQuery,
+      repositoriesMatchingSearchQuery
+    } = useRepositoryNameSearch(repositories)
 
     return {
-      repositories,
-      getUserRepositories // functions returned behave the same as methods
+      repositories: repositoriesMatchingSearchQuery,
+      getUserRepositories,
+      searchQuery,
     }
   },
   data () {
     return {
       filters: { }, // 3
-      searchQuery: '' // 2
     }
   },
   computed: {
     filteredRepositories () {
       return null
      }, // 3
-    repositoriesMatchingSearchQuery () { 
-      return null
-    }, // 2
   },
   methods: {
     updateFilters () { }, // 3

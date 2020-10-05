@@ -1,17 +1,20 @@
 <template>
-<div>
-  <div v-for="repository in repositories" :key="repository">
-    {{ repository.name }}
-  </div>
-</div>
+  <repositories-name-search v-model="searchQuery" />
+  <repositories-list :repositories="repositories" />
 </template>
 
 <script>
+import RepositoriesList from '@/components/RepositoriesList.vue'
+import RepositoriesNameSearch from '@/components/RepositoriesNameSearch.vue'
 import useUserRepositories from '@/composables/useUserRepositories'
 import useRepositoryNameSearch from '@/composables/useRepositoryNameSearch'
 import { toRefs } from 'vue'
 export default {
-  // components: { RepositoriesFilters, RepositoriesSortBy, RepositoriesList },
+  components: { 
+    RepositoriesNameSearch, 
+    // RepositoriesFilters, 
+    RepositoriesList
+  },
   props: {
     user: { type: String }
   },
